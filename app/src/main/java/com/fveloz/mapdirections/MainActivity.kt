@@ -31,16 +31,14 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.location
 import com.mapbox.maps.extension.style.expressions.dsl.generated.interpolate
 import com.mapbox.maps.plugin.annotation.annotations
-import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.*
 import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var locationPermissionHelper: LocationPermissionHelper
+    private var pointAnnotationManager: PointAnnotationManager? = null
     private var userLocation: Viewpoint? = null
     private var userDestination: Viewpoint? = null
 
@@ -88,8 +86,12 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val selected: String = parent.getItemAtPosition(pos) as String
         val filtered = points.filter { it.name == selected }
         if (filtered.isNotEmpty()) {
+            pointAnnotationManager?.let{
+                it.deleteAll()
+            }
             userDestination = filtered[0]
             binding.mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(filtered[0].point).build())
+            addAnnotationsToMap(filtered[0])
         }
     }
     override fun onNothingSelected(parent: AdapterView<*>) { }
@@ -100,16 +102,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             R.drawable.red_marker
         )?.let {
             val annotationApi = binding.mapView.annotations
-            val pointAnnotationManager = annotationApi.createPointAnnotationManager()
+            pointAnnotationManager = annotationApi.createPointAnnotationManager()
             val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
                 .withPoint(viewpoint.point)
                 .withIconImage(it)
-            pointAnnotationManager.create(pointAnnotationOptions)
-            pointAnnotationManager.addClickListener(OnPointAnnotationClickListener {
-                userDestination = viewpoint
-                binding.spinSteps.setSelection(points.indexOf(viewpoint))
-                true
-            })
+            pointAnnotationManager!!.create(pointAnnotationOptions)
         }
     }
 
@@ -145,9 +142,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         ) {
             initLocationComponent()
             setupGesturesListener()
-            points.forEach{
-                addAnnotationsToMap(it)
-            }
         }
     }
 

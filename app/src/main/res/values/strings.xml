@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MapDirections</string>
+    <string name="general_error">Something went wrong. Try again later.</string>
+    <string name="no_connection">You are not connected to the internet. Check your connection.</string>
+    <string name="no_data">We couldn\'t find a route to your destination. Try again later.</string>
+
+    <string name="destination_required">You need to select a destination first.</string>
+    <string name="button_directions">"Get\ndirections"</string>
+    <string name="forspace">For</string>
+    <string name="seconds">seconds</string>
+    <string name="miles">miles</string>
+    <string name="destination">To:&#160;</string>
+    <string name="location">My location</string>
+
+    <string name="mapbox_access_token">pk.eyJ1IjoiZnJlZGVyaWMtZWQiLCJhIjoiY2wweTc2aGIyMDdiYzNqczFldWp6cWpldCJ9.ev1E5TuS3-rgd53wWSRSlQ</string>
+</resources>
